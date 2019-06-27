@@ -4,4 +4,6 @@
     <string name="heure">Heure</string>
     <string name="Jour">Jour de la semaine</string>
     <string name="Nom">Nom de l\'alarme</string>
+
+    <string name="pref_alarmArray">fr.lmorin.pref_alarmArray</string>
 </resources>

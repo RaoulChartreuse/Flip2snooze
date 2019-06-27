@@ -1,6 +1,9 @@
 package fr.lmorin.flip2snooze;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,24 +11,25 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
 
-/*   private List<AlarmRecord> alarmRecordList = Arrays.asList(
+/*   private List<AlarmRecord> alarmRecordList = new ArrayList<>(Arrays.asList(
            new AlarmRecord( "12:12", "Lundi", "1Er Alarme"),
            new AlarmRecord( "09;08", "KJGH", "2eme Alarme"),
-           new AlarmRecord( "591", "sdf", "Autre Alarme")
-   );*/
-   private List<AlarmRecord> alarmRecordList = new ArrayList<>(Arrays.asList(
-           new AlarmRecord( "12:12", "Lundi", "1Er Alarme"),
-           new AlarmRecord( "09;08", "KJGH", "2eme Alarme"),
-           new AlarmRecord( "591", "sdf", "Autre Alarme") ));
+           new AlarmRecord( "591", "sdf", "Autre Alarme") ));*/
+   private List<AlarmRecord> alarmRecordList ;
 
-      @Override
+   SharedPreferences Prefs;
+   String KEY= null;
 
+   @Override
    public int getItemCount() {
 
        return alarmRecordList.size();
@@ -34,19 +38,51 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
 
    public void addAlarmRecord(AlarmRecord alarmRecord){
           alarmRecordList.add(alarmRecord);
+          updateAlarmList();
    }
 
    public void removeAlarmRecord(int index){
           alarmRecordList.remove(index);
+          updateAlarmList();
    }
 
-   @Override
+    private void updateAlarmList(){
 
+        Gson gson = new Gson();
+        String jsonText = gson.toJson(alarmRecordList);
+        SharedPreferences.Editor editor = Prefs.edit();
+        editor.putString(KEY, jsonText);
+        editor.apply();
+
+    }
+
+    private List<AlarmRecord> getAlarmList(Context context){
+        KEY = context.getString(R.string.pref_alarmArray);
+        Prefs = context.getSharedPreferences( KEY , Context.MODE_PRIVATE);
+        Gson gson = new Gson();
+        String jsonText = Prefs.getString(KEY, null);
+        if (jsonText == null)
+            return new ArrayList<>();
+        return gson.fromJson(jsonText,  new TypeToken<ArrayList<AlarmRecord>>(){}.getType());
+    }
+
+
+    public AlarmAdapter(Context context){
+        alarmRecordList = getAlarmList(context);
+
+    }
+
+
+   @Override
    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
        View view = inflater.inflate(R.layout.list_cell, parent, false);
+
+
+
+
 
        return new MyViewHolder(view);
 

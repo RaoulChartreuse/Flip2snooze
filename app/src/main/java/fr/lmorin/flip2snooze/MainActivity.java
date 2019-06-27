@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         final RecyclerView rv = findViewById(R.id.mAlarmList);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        mAlarmAdapter = new AlarmAdapter();
+        mAlarmAdapter = new AlarmAdapter(getBaseContext());
         rv.setAdapter(mAlarmAdapter);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
