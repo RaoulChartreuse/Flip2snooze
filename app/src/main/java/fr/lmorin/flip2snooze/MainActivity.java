@@ -1,6 +1,6 @@
 package fr.lmorin.flip2snooze;
 
-import android.content.Context;
+
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,11 +18,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.TimePicker;
 
 public class MainActivity extends AppCompatActivity {
 
     private PopupWindow mPopupWindow;
     private AlarmAdapter mAlarmAdapter;
+    TimePicker picker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= 21) {
                     mPopupWindow.setElevation(5.0f);
                 }
-                ImageButton closeButton = (ImageButton) customView.findViewById(R.id.ib_close);
+                ImageButton closeButton =  customView.findViewById(R.id.ib_close);
                 closeButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -64,16 +66,18 @@ public class MainActivity extends AppCompatActivity {
                 });
 
                 //mPopupWindow.showAsDropDown(findViewById(R.id.cl));
+                picker= findViewById(R.id.timePicker);
+
+
 
                 final AlarmRecord alarm = new AlarmRecord("12:13", "All", "Default");
+
 
 
                 Button mButton = customView.findViewById(R.id.addButton);
                 mButton.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View view){
-                        EditText qHeure = customView.findViewById(R.id.qHeure);
-                        alarm.cal = qHeure.getText().toString();
                         EditText qJour = customView.findViewById(R.id.qJour);
                         alarm.j = qJour.getText().toString();
                         EditText qNom = customView.findViewById(R.id.qNom);
@@ -83,7 +87,24 @@ public class MainActivity extends AppCompatActivity {
                         mPopupWindow.dismiss();
                     }
                 });
+                picker= customView.findViewById(R.id.timePicker);
+                picker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
+                    @Override
+                    public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
+                        alarm.cal = hourOfDay+" "+minute;
 
+                    }
+                });
+
+                picker.setIs24HourView(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    picker.setHour(12);
+                    picker.setMinute(34);
+                }
+                else {
+                    picker.setCurrentHour(12);
+                    picker.setCurrentMinute(34);
+                }
 
                 mPopupWindow.setFocusable(true);
                 mPopupWindow.showAtLocation(findViewById(R.id.cl), Gravity.CENTER,0,0);

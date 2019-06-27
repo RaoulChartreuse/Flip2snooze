@@ -1,6 +1,5 @@
 package fr.lmorin.flip2snooze;
 
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -15,7 +14,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
@@ -27,7 +25,7 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
    private List<AlarmRecord> alarmRecordList ;
 
    SharedPreferences Prefs;
-   String KEY= null;
+   private String KEY= null;
 
    @Override
    public int getItemCount() {
@@ -53,6 +51,7 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
         SharedPreferences.Editor editor = Prefs.edit();
         editor.putString(KEY, jsonText);
         editor.apply();
+        notifyDataSetChanged();
 
     }
 
