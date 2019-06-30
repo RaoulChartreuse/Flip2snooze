@@ -1,6 +1,9 @@
 package fr.lmorin.flip2snooze;
 
 
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +22,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.TimePicker;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -70,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                final AlarmRecord alarm = new AlarmRecord("12:13", "All", "Default");
+                final AlarmRecord alarm = new AlarmRecord(12,13, "All", "Default");
 
 
 
@@ -91,7 +96,9 @@ public class MainActivity extends AppCompatActivity {
                 picker.setOnTimeChangedListener(new TimePicker.OnTimeChangedListener() {
                     @Override
                     public void onTimeChanged(TimePicker view, int hourOfDay, int minute) {
-                        alarm.cal = hourOfDay+" "+minute;
+                        alarm.mHeure = hourOfDay;
+                        alarm.mMinute = minute;
+                        alarm.mStringHeure = String.format("%02d:%02d",hourOfDay,minute) ;
 
                     }
                 });
@@ -121,6 +128,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+
+
+
         return true;
     }
 
@@ -134,6 +144,24 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.action_debug){
+            Calendar calendar = Calendar.getInstance();
+            long a = System.currentTimeMillis();
+            calendar.setTimeInMillis(a);
+            int h = calendar.get(calendar.HOUR_OF_DAY);
+            int m = calendar.get(calendar.MINUTE);
+
+            AlarmRecord alarm = new AlarmRecord(h, m , "J Debug", "Debug");
+            mAlarmAdapter.addAlarmRecord(alarm);
+            mAlarmAdapter.alarmRecordManager.unregisterAlarm(alarm);// I want a custom intent for debug
+            Intent alarmIntent = new Intent(getApplicationContext(), wakeupActivity.class);
+            alarmIntent.setData(Uri.parse("custom://"+alarm.mId));
+            alarmIntent.putExtra("alarmId", alarm.mId.toString());
+            startActivity(alarmIntent);
+
+
         }
 
         return super.onOptionsItemSelected(item);

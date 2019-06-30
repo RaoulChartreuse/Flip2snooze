@@ -2,72 +2,48 @@ package fr.lmorin.flip2snooze;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.util.ArrayList;
-import java.util.List;
 
 class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
 
-/*   private List<AlarmRecord> alarmRecordList = new ArrayList<>(Arrays.asList(
-           new AlarmRecord( "12:12", "Lundi", "1Er Alarme"),
-           new AlarmRecord( "09;08", "KJGH", "2eme Alarme"),
-           new AlarmRecord( "591", "sdf", "Autre Alarme") ));*/
-   private List<AlarmRecord> alarmRecordList ;
 
-   SharedPreferences Prefs;
-   private String KEY= null;
+   AlarmRecordManager alarmRecordManager;
+
+
 
    @Override
    public int getItemCount() {
 
-       return alarmRecordList.size();
+       return alarmRecordManager.getSize();
 
    }
 
-   public void addAlarmRecord(AlarmRecord alarmRecord){
-          alarmRecordList.add(alarmRecord);
-          updateAlarmList();
-   }
+
+
+    public void addAlarmRecord(AlarmRecord alarmRecord){
+        // TODO en fait cette fct ca na rien a faire ici
+        // Peut etre pour le notifier
+        alarmRecordManager.addAlarmRecord(alarmRecord);
+        notifyDataSetChanged();
+    }
 
    public void removeAlarmRecord(int index){
-          alarmRecordList.remove(index);
-          updateAlarmList();
+       //TODO idem addAlarmRecord ??
+       alarmRecordManager.removeAlarmRecord(index);
+       notifyDataSetChanged();
    }
 
-    private void updateAlarmList(){
-
-        Gson gson = new Gson();
-        String jsonText = gson.toJson(alarmRecordList);
-        SharedPreferences.Editor editor = Prefs.edit();
-        editor.putString(KEY, jsonText);
-        editor.apply();
-        notifyDataSetChanged();
-
-    }
-
-    private List<AlarmRecord> getAlarmList(Context context){
-        KEY = context.getString(R.string.pref_alarmArray);
-        Prefs = context.getSharedPreferences( KEY , Context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        String jsonText = Prefs.getString(KEY, null);
-        if (jsonText == null)
-            return new ArrayList<>();
-        return gson.fromJson(jsonText,  new TypeToken<ArrayList<AlarmRecord>>(){}.getType());
-    }
 
 
     public AlarmAdapter(Context context){
-        alarmRecordList = getAlarmList(context);
+       alarmRecordManager = new AlarmRecordManager(context);
 
     }
 
@@ -92,7 +68,7 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
 
    public void onBindViewHolder(MyViewHolder holder, int position) {
 
-       AlarmRecord pair = alarmRecordList.get(position);
+       AlarmRecord pair = alarmRecordManager.get(position);
 
        holder.display(pair);
 
@@ -107,6 +83,7 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
        private final TextView description;
        private final TextView heure;
        private final ImageButton deleteButton;
+       private final Switch IsActive;
 
        private AlarmRecord currentAlarm;
 
@@ -140,13 +117,15 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
 
                            .setTitle(currentAlarm.n)
 
-                           .setMessage(currentAlarm.j + " : "+currentAlarm.cal)
+                           .setMessage(currentAlarm.j + " : "+currentAlarm.mHeure)
 
                            .show();
 
                }
 
            });
+
+           IsActive = itemView.findViewById(R.id.switch1);
 
        }
 
@@ -156,9 +135,11 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
            currentAlarm = alarm;
 
            name.setText(alarm.n);
-           heure.setText(alarm.cal);
+           heure.setText(alarm.mStringHeure);
 
            description.setText(alarm.j);
+           IsActive.setChecked(alarm.mIsActive);
+
 
        }
 
