@@ -23,7 +23,7 @@ public class AlarmRecordManager{
     private void registerAlarm(AlarmRecord alarmRecord){
         Intent alarmIntent = new Intent(mContext.getApplicationContext(), wakeupActivity.class);
         alarmIntent.setData(Uri.parse("custom://"+alarmRecord.mId));
-        alarmIntent.putExtra("alarmId", alarmRecord.mId);
+        alarmIntent.putExtra("alarmId", alarmRecord.mId.toString());
         AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         //PendingIntent displayIntent = PendingIntent.getBroadcast(mContext, 0, alarmIntent, 0);
         PendingIntent displayIntent = PendingIntent.getActivity(mContext, 0, alarmIntent, 0);
@@ -40,7 +40,7 @@ public class AlarmRecordManager{
     void unregisterAlarm(AlarmRecord alarmRecord){
         Intent alarmIntent = new Intent(mContext.getApplicationContext(), wakeupActivity.class);
         alarmIntent.setData(Uri.parse("custom://"+alarmRecord.mId));
-        alarmIntent.putExtra("alarmId", alarmRecord.mId);
+        alarmIntent.putExtra("alarmId", alarmRecord.mId.toString());
         AlarmManager alarmManager = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
         //PendingIntent displayIntent = PendingIntent.getBroadcast(mContext, 0, alarmIntent, 0);
         PendingIntent displayIntent = PendingIntent.getActivity(mContext, 0, alarmIntent, 0);
@@ -112,7 +112,7 @@ public class AlarmRecordManager{
     public AlarmRecord finById(String id) {
         //TODO reflechir a la possibilité d'une table de Hashage
         // Pro : Temps linéaire
-        // Con : On a probablement moins d'une 50 aine d'alarme
+        // Con : On a probablement moins d'une 50 aine d'alarme et on doit avoir une liste ordonné pour la vue
         for (AlarmRecord al : alarmRecordList){
             if(al.mId.toString().equals(id)) return al;
 
