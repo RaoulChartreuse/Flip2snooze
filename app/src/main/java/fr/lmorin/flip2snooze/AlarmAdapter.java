@@ -1,17 +1,26 @@
 package fr.lmorin.flip2snooze;
 
-import android.app.AlertDialog;
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.PopupWindow;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 
-class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
+public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
 
 
    AlarmRecordManager alarmRecordManager;
@@ -86,19 +95,43 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
        private final Switch IsActive;
 
        private AlarmRecord currentAlarm;
-
+       private PopupWindow mPopupWindow;
 
        public MyViewHolder(final View itemView) {
 
            super(itemView);
 
 
-           name = ((TextView) itemView.findViewById(R.id.name));
+           name = itemView.findViewById(R.id.name);
+           name.setOnClickListener(new View.OnClickListener() {
 
-           description = ((TextView) itemView.findViewById(R.id.jour));
+               @Override
+               public void onClick(View view) {
+                   showMyPopupWindow(view, false, true, false);
+               }
+
+           });
+
+           description = itemView.findViewById(R.id.jour);
+           description.setOnClickListener(new View.OnClickListener() {
+
+               @Override
+               public void onClick(View view) {
+                   showMyPopupWindow(view, false, false, true);
+               }
+
+           });
            heure = itemView.findViewById(R.id.heure);
+           heure.setOnClickListener(new View.OnClickListener() {
+
+               @Override
+               public void onClick(View view) {
+                   showMyPopupWindow(view, true, false, false);
+               }
+
+           });
            deleteButton = itemView.findViewById(R.id.deleteButton);
-           deleteButton.setOnClickListener(new View.OnClickListener() {
+           deleteButton.setOnClickListener(new OnClickListener() {
                @Override
                public void onClick(View v) {
                    removeAlarmRecord(getAdapterPosition());
@@ -107,25 +140,93 @@ class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder> {
                }
            });
 
-           itemView.setOnClickListener(new View.OnClickListener() {
+           itemView.setOnClickListener(new OnClickListener() {
 
                @Override
 
                public void onClick(View view) {
 
-                   new AlertDialog.Builder(itemView.getContext())
-
-                           .setTitle(currentAlarm.n)
-
-                           .setMessage(currentAlarm.j + " : "+currentAlarm.mHeure)
-
-                           .show();
-
+                   showMyPopupWindow(view, true, true, true);
                }
 
            });
 
            IsActive = itemView.findViewById(R.id.switch1);
+           IsActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+               public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                   currentAlarm.mIsActive = isChecked;
+               }
+           });
+
+       }
+
+       private void showMyPopupWindow(View view, final boolean showTime, final boolean showJour, final boolean showNom) {
+
+           LayoutInflater inflater = (LayoutInflater) view.getContext().getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+           final View customView;
+           customView = inflater.inflate(R.layout.popup_add_alarm, null);
+           mPopupWindow = new PopupWindow(customView,
+                   ViewGroup.LayoutParams.WRAP_CONTENT,
+                   ViewGroup.LayoutParams.WRAP_CONTENT);
+           ImageButton closeButton = customView.findViewById(R.id.ib_close);
+           closeButton.setOnClickListener(new OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   // Dismiss the popup window
+                   mPopupWindow.dismiss();
+               }
+           });
+
+           final TimePicker picker = customView.findViewById(R.id.timePicker);
+           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+               picker.setHour(currentAlarm.mHeure);
+               picker.setMinute(currentAlarm.mMinute);
+           } else {
+               picker.setCurrentHour(currentAlarm.mHeure);
+               picker.setCurrentMinute(currentAlarm.mMinute);
+           }
+           picker.setVisibility(showTime ? View.VISIBLE : View.GONE);
+
+           TextView tJour = customView.findViewById(R.id.tJour);
+           tJour.setVisibility(showJour ? View.VISIBLE : View.GONE);
+           final EditText qJour = customView.findViewById(R.id.qJour);
+           qJour.setVisibility(showJour ? View.VISIBLE : View.GONE);
+
+           TextView tNom = customView.findViewById(R.id.tNom);
+           tNom.setVisibility(showNom ? View.VISIBLE : View.GONE);
+           final EditText qNom = customView.findViewById(R.id.qNom);
+           qNom.setVisibility(showNom ? View.VISIBLE : View.GONE);
+
+           Button bModifier = customView.findViewById(R.id.addButton);
+           bModifier.setText(view.getContext().getString(R.string.modifier));
+           bModifier.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   if (showJour) currentAlarm.j = qJour.getText().toString();
+                   if (showNom) currentAlarm.n = qNom.getText().toString();
+                   if (showTime) {
+                       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                           currentAlarm.mHeure = picker.getHour();
+                           currentAlarm.mMinute = picker.getMinute();
+                           currentAlarm.mStringHeure = String.format("%02d:%02d",
+                                   picker.getHour(),
+                                   picker.getMinute());
+                       } else {
+                           currentAlarm.mHeure = picker.getCurrentHour();
+                           currentAlarm.mMinute = picker.getCurrentMinute();
+                           currentAlarm.mStringHeure = String.format("%02d:%02d",
+                                   picker.getCurrentHour(),
+                                   picker.getCurrentMinute());
+                       }
+
+                   }
+
+                   mPopupWindow.dismiss();
+               }
+           });
+           mPopupWindow.setFocusable(true);
+           //customView.findViewById(R.id.cl)
+           mPopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
        }
 

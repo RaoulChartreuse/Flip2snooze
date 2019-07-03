@@ -1,7 +1,6 @@
 package fr.lmorin.flip2snooze;
 
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -13,9 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 //final Dialog dialog = new Dialog();
 
@@ -150,8 +148,8 @@ public class MainActivity extends AppCompatActivity {
             Calendar calendar = Calendar.getInstance();
             long a = System.currentTimeMillis();
             calendar.setTimeInMillis(a);
-            int h = calendar.get(calendar.HOUR_OF_DAY);
-            int m = calendar.get(calendar.MINUTE);
+            int h = calendar.get(Calendar.HOUR_OF_DAY);
+            int m = calendar.get(Calendar.MINUTE);
 
             AlarmRecord alarm = new AlarmRecord(h, m , "J Debug", "Debug");
             mAlarmAdapter.addAlarmRecord(alarm);

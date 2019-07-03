@@ -7,4 +7,6 @@
 
     <string name="pref_alarmArray">fr.lmorin.pref_alarmArray</string>
     <string name="action_debug">Debug wakupalarm</string>
+    <string name="ajouter">Ajouter</string>
+    <string name="modifier">Modifier</string>
 </resources>
