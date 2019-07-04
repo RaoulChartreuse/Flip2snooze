@@ -155,6 +155,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder
            IsActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                    currentAlarm.mIsActive = isChecked;
+                   if (isChecked) {
+                       alarmRecordManager.registerAlarm(currentAlarm);
+
+                   } else {
+                       alarmRecordManager.unregisterAlarm(currentAlarm);
+                   }
                }
            });
 
@@ -178,6 +184,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.MyViewHolder
            });
 
            final TimePicker picker = customView.findViewById(R.id.timePicker);
+           picker.setIs24HourView(true);
            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                picker.setHour(currentAlarm.mHeure);
                picker.setMinute(currentAlarm.mMinute);

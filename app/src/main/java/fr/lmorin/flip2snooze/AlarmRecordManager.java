@@ -20,7 +20,7 @@ public class AlarmRecordManager{
     private String KEY;
     Context mContext;
 
-    private void registerAlarm(AlarmRecord alarmRecord){
+    void registerAlarm(AlarmRecord alarmRecord) {
         Intent alarmIntent = new Intent(mContext.getApplicationContext(), wakeupActivity.class);
         alarmIntent.setData(Uri.parse("custom://"+alarmRecord.mId));
         alarmIntent.putExtra("alarmId", alarmRecord.mId.toString());
@@ -60,6 +60,7 @@ public class AlarmRecordManager{
         alarmRecordList.remove(index);
         updateAlarmList();
     }
+
 
     private void updateAlarmList(){
 
@@ -120,4 +121,6 @@ public class AlarmRecordManager{
         return null;
 
     }
+
+
 }

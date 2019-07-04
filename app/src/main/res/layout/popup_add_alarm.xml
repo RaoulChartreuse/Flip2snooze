@@ -10,72 +10,58 @@
         android:id="@+id/tJour"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/Jour"
-        app:layout_constraintStart_toStartOf="@+id/timePicker"
-        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+        app:layout_constraintStart_toEndOf="@+id/qNom"
+        app:layout_constraintTop_toTopOf="@+id/qNom" />
 
 
     <TextView
         android:id="@+id/tNom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/Nom"
-        app:layout_constraintStart_toStartOf="@+id/timePicker"
-        app:layout_constraintTop_toBottomOf="@+id/tJour" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <Button
         android:id="@+id/addButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/ajouter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tNom" />
-
-    <EditText
-        android:id="@+id/qJour"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:hint="All"
-        android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="@+id/tJour"
-        app:layout_constraintEnd_toEndOf="@+id/timePicker"
-        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/qNom" />
 
     <EditText
         android:id="@+id/qNom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"
         android:hint="Default"
         android:inputType="text"
-        app:layout_constraintBottom_toBottomOf="@+id/addButton"
-        app:layout_constraintEnd_toEndOf="@+id/timePicker"
-        app:layout_constraintTop_toBottomOf="@+id/qJour" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timePicker" />
 
     <TimePicker
         android:id="@+id/timePicker"
         android:layout_width="243dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></TimePicker>
+        app:layout_constraintTop_toBottomOf="@+id/qJour"></TimePicker>
 
     <ImageButton
         android:id="@+id/ib_close"
@@ -88,4 +74,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_close_black_24dp" />
+
+    <EditText
+        android:id="@+id/qJour"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:hint="All"
+        android:inputType="text"
+        app:layout_constraintBottom_toBottomOf="@+id/tNom"
+        app:layout_constraintEnd_toEndOf="@+id/tJour"
+        app:layout_constraintStart_toEndOf="@+id/tNom"
+        app:layout_constraintTop_toTopOf="parent" />
 </android.support.constraint.ConstraintLayout>
